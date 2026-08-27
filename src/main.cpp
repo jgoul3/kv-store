@@ -4,7 +4,7 @@
 
 int main () {
     Store store;
-    Server server(6380);
+    Server server(6830);
     server.run(store);
     return 0;
 }

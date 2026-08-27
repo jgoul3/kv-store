@@ -8,8 +8,10 @@
 class Store
 {
 public:
+    // Insert or overwrite a key's value.
     void set(const std::string &key, const std::string &value);
 
+    // Look up a key. Returns the value if found, empty optional otherwise.
     std::optional<std::string> get(const std::string &key) const;
 
     bool del(const std::string &key);

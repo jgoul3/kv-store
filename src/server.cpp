@@ -94,7 +94,8 @@ void Server::run (Store& store) {
             std::cerr << "Accept failed." << std::endl;
             continue;
         }
-        std::cout << "Client connected." << std::endl;
+        std::cout << "Client connected." <<std::endl;
+
         std::thread worker(handleClient, clientFd, std::ref(store));
         worker.detach();
     }
