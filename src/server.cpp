@@ -4,6 +4,7 @@
 #include <sstream>
 #include <string>
 #include <cstring>
+#include <thread>
 
 #include <unistd.h>
 #include <sys/socket.h>
@@ -54,7 +55,7 @@ static void handleClient (int clientFd, Store& store) {
 
         write(clientFd, response.c_str(), response.size());
     }
-
+    std::cout << "Client disconnected" << std::endl;
     close(clientFd);
 }
 
@@ -93,8 +94,8 @@ void Server::run (Store& store) {
             std::cerr << "Accept failed." << std::endl;
             continue;
         }
-        std::cout << "Client connected." <<std::endl;
-        handleClient(clientFd, store);
-        std::cout << "Client disconnected." << std::endl;
+        std::cout << "Client connected." << std::endl;
+        std::thread worker(handleClient, clientFd, std::ref(store));
+        worker.detach();
     }
 }
