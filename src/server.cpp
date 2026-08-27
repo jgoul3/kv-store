@@ -12,7 +12,7 @@
 
 Server::Server(int port) : port_(port) {}
 
-static void handleClient (int clientFd, Store& store) {
+static void handleClient (int clientFd, Store& store, int clientNum) {
     char buffer[4096];
     
     while (true) {
@@ -55,12 +55,13 @@ static void handleClient (int clientFd, Store& store) {
 
         write(clientFd, response.c_str(), response.size());
     }
-    std::cout << "Client disconnected" << std::endl;
+    std::cout << "Client " << clientNum << " disconnected." << std::endl;
     close(clientFd);
 }
 
 void Server::run (Store& store) {
     int serverFd = socket(AF_INET, SOCK_STREAM, 0);
+    int clientNum = 1;
     if (serverFd < 0) {
         std::cerr <<"Failed to create socket." << std::endl;
         return;
@@ -94,9 +95,9 @@ void Server::run (Store& store) {
             std::cerr << "Accept failed." << std::endl;
             continue;
         }
-        std::cout << "Client connected." <<std::endl;
-
-        std::thread worker(handleClient, clientFd, std::ref(store));
+        std::cout << "Client " << clientNum << " connected." <<std::endl;
+        std::thread worker(handleClient, clientFd, std::ref(store), clientNum);
         worker.detach();
+        clientNum++;
     }
 }
